@@ -52,7 +52,7 @@
               <call action="ADD_internal_note">
                 <with ticket="${ticket}" note="Account is crypto-locked; auto-escalating to crypto team."/>
               </call>
-              <call action="ESCALATE_crypto_case">
+              <call action="ESCALATE_case">
                 <with ticket="${ticket}" reason="Crypto restriction lock needs specialized support."/>
               </call>
             </when>
@@ -87,7 +87,7 @@
               <call action="ADD_internal_note">
                 <with ticket="${ticket}" note="Password reset for crypto-locked account; escalating to crypto team."/>
               </call>
-              <call action="ESCALATE_crypto_case">
+              <call action="ESCALATE_case">
                 <with ticket="${ticket}" reason="Crypto restriction lock prevents password reset."/>
               </call>
             </when>

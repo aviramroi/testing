@@ -1,0 +1,16 @@
+<sfdl version="1.0" xmlns="urn:sfdl">
+  <primitives>
+    <primitive name="text"/>
+    <primitive name="account_id"/>
+    <primitive name="email"/>
+    <primitive name="timestamp"/>
+    <primitive name="boolean"/>
+  </primitives>
+  <enums>
+    <enum name="account_status">
+      <value>active</value>
+      <value>suspended</value>
+      <value>closed</value>
+    </enum>
+  </enums>
+</sfdl>
