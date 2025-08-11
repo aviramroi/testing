@@ -3,8 +3,12 @@
     <record name="Account">
       <field name="id" type="account_id"/>
       <field name="email" type="email"/>
+      <field name="full_name" type="full_name"/>
       <field name="status" type="account_status"/>
-      <field name="full_name" type="text"/>
+    </record>
+    <record name="InternalNote">
+      <field name="ticket_id" type="account_id"/>
+      <field name="content" type="note_text"/>
     </record>
   </types>
 </sfdl>

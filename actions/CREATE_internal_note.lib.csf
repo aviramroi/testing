@@ -1,8 +1,8 @@
 <sfdl version="1.0" xmlns="urn:sfdl">
-  <action name="ESCALATE_case" adapter="tickets" idempotentKey="${ticket_id}|escalate">
+  <action name="CREATE_internal_note" adapter="tickets" idempotentKey="${ticket_id}|${content}">
     <input>
       <field name="ticket_id" type="account_id"/>
-      <field name="reason" type="text"/>
+      <field name="content" type="note_text"/>
     </input>
     <output type="InternalNote"/>
   </action>

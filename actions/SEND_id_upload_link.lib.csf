@@ -1,11 +1,9 @@
 <sfdl version="1.0" xmlns="urn:sfdl">
-  <actions>
-    <action name="SEND_id_upload_link" adapter="email" idempotentKey="${email}">
-      <input>
-        <field name="email" type="email"/>
-        <field name="link" type="text"/>
-      </input>
-      <output type="ok_response"/>
-    </action>
-  </actions>
+  <action name="SEND_id_upload_link" adapter="messaging" idempotentKey="${ticket_id}|id_upload">
+    <input>
+      <field name="ticket_id" type="account_id"/>
+      <field name="upload_url" type="url"/>
+    </input>
+    <output type="text"/>
+  </action>
 </sfdl>

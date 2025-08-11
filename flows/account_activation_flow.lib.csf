@@ -1,0 +1,62 @@
+<sfdl version="1.0" xmlns="urn:sfdl">
+  <flow name="account_activation_flow" returns="Ok">
+    <args>
+      <arg name="ticket_id" type="account_id"/>
+      <arg name="email" type="email"/>
+    </args>
+    <step name="LOOKUP">
+      <call action="LOOKUP_account_by_email">
+        <with email="${email}"/>
+      </call>
+    </step>
+
+    <if test="${LOOKUP} == null">
+      <then>
+        <call action="SEND_message">
+          <with ticket_id="${ticket_id}" body="Please provide the email address associated with your account."/>
+        </call>
+        <return value="{ ok: false }"/>
+      </then>
+    </if>
+
+    <step name="ASK_NAME">
+      <call action="SEND_message">
+        <with ticket_id="${ticket_id}" body="For security, please provide your full name as on your account."/>
+      </call>
+    </step>
+
+    <step name="VERIFY_NAME">
+      <!-- client response captured externally and passed back as input -->
+    </step>
+
+    <if test="${LOOKUP.status} in ['not_activated']">
+      <then>
+        <call action="SEND_activation_link">
+          <with ticket_id="${ticket_id}" activation_url="https://members.masspay.io/activation"/>
+        </call>
+      </then>
+    </if>
+    <if test="${LOOKUP.status} in ['locked','id_required']">
+      <then>
+        <call action="SEND_id_upload_link">
+          <with ticket_id="${ticket_id}" upload_url="https://members.masspay.io/v2/upload-id"/>
+        </call>
+        <call action="SEND_message">
+          <with ticket_id="${ticket_id}" body="After uploading, return to https://members.masspay.io/v2/login and let us know if it still doesn't work."/>
+        </call>
+      </then>
+    </if>
+    <if test="${LOOKUP.status} == 'crypto_locked'">
+      <then>
+        <call action="CREATE_internal_note">
+          <with ticket_id="${ticket_id}" content="Account locked due to crypto restrictions; escalating."/>
+        </call>
+        <call action="ESCALATE_case">
+          <with ticket_id="${ticket_id}" reason="crypto_locked"/>
+        </call>
+      </then>
+    </if>
+
+    <return value="{ ok: true }"/>
+  </flow>
+</sfdl>

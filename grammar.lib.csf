@@ -1,0 +1,21 @@
+<sfdl version="1.0" xmlns="urn:sfdl">
+  <primitives>
+    <primitive name="email"/>
+    <primitive name="account_id"/>
+    <primitive name="full_name"/>
+    <primitive name="account_status"/>
+    <primitive name="url"/>
+    <primitive name="note_text"/>
+    <primitive name="video_url"/>
+  </primitives>
+
+  <enums>
+    <enum name="account_status">
+      <value>not_activated</value>
+      <value>activated</value>
+      <value>locked</value>
+      <value>id_required</value>
+      <value>crypto_locked</value>
+    </enum>
+  </enums>
+</sfdl>

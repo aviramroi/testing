@@ -1,8 +1,8 @@
 <sfdl version="1.0" xmlns="urn:sfdl">
-  <action name="SEND_activation_link" adapter="messaging" idempotentKey="${ticket_id}|activation">
+  <action name="SEND_message" adapter="messaging" idempotentKey="${ticket_id}|${body}">
     <input>
       <field name="ticket_id" type="account_id"/>
-      <field name="activation_url" type="url"/>
+      <field name="body" type="text"/>
     </input>
     <output type="text"/>
   </action>
