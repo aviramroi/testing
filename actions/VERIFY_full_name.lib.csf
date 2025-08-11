@@ -1,14 +1,14 @@
 <sfdl version="1.0" xmlns="urn:sfdl">
   <actions>
-    <action name="SEND_activation_link" adapter="email" idempotentKey="${account_id}|activation">
+    <action name="VERIFY_full_name" adapter="accounts" idempotentKey="${account_id}|${full_name}">
       <input>
         <field name="account_id" type="account_id"/>
-        <field name="email" type="email"/>
+        <field name="full_name" type="text"/>
       </input>
       <output type="boolean"/>
-      <audit event="account.activation_link_sent">
+      <audit event="account.name_verified">
         <fieldRef>account_id</fieldRef>
-        <fieldRef>email</fieldRef>
+        <fieldRef>full_name</fieldRef>
       </audit>
     </action>
   </actions>

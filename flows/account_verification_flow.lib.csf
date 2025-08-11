@@ -3,7 +3,7 @@
     <flow name="account_verification_flow" returns="AccountVerificationResult">
       <args>
         <arg name="email" type="email"/>
-        <arg name="name" type="text"/>
+        <arg name="full_name" type="text"/>
       </args>
 
       <step name="email_verified">
@@ -14,57 +14,53 @@
 
       <if test="${email_verified} == false">
         <then>
-          <return value="{ verified: false, status: 'not_activated', message: 'Email not found. Please provide the correct email associated with your account.' }"/>
+          <return value="{ verified: false, message: 'Email not found in our records.' }"/>
         </then>
       </if>
 
+      <step name="account">
+        <call action="GET_account_status">
+          <with account_id="${email_verified.account_id}"/>
+        </call>
+      </step>
+
       <step name="name_verified">
-        <call action="VERIFY_name">
-          <with email="${email}" name="${name}"/>
+        <call action="VERIFY_full_name">
+          <with account_id="${account.id}" full_name="${full_name}"/>
         </call>
       </step>
 
       <if test="${name_verified} == false">
         <then>
-          <return value="{ verified: false, status: 'not_activated', message: 'Name does not match our records. Please verify your full name as it appears on your account.' }"/>
+          <return value="{ verified: false, message: 'Full name does not match our records.' }"/>
         </then>
       </if>
 
-      <step name="account_status">
-        <call action="CHECK_account_status">
-          <with email="${email}"/>
-        </call>
-      </step>
-
-      <if test="${account_status} == 'not_activated'">
+      <if test="${account.status} == 'not_activated'">
         <then>
-          <step name="sent_activation">
-            <call action="SEND_activation_link">
-              <with email="${email}"/>
-            </call>
-          </step>
-          <return value="{ verified: true, status: 'not_activated', message: 'Account not activated. An activation link has been sent to your email.' }"/>
+          <call action="SEND_activation_link">
+            <with account_id="${account.id}" email="${email}"/>
+          </call>
+          <return value="{ verified: true, message: 'Account not activated. Activation link sent to your email.' }"/>
         </then>
       </if>
 
-      <if test="${account_status} in ['locked', 'id_required']">
+      <if test="${account.status} in ['locked', 'id_required']">
         <then>
-          <step name="sent_id_upload">
-            <call action="SEND_id_upload_link">
-              <with email="${email}"/>
-            </call>
-          </step>
-          <return value="{ verified: true, status: ${account_status}, message: 'Account requires ID verification. An ID upload link has been sent to your email.' }"/>
+          <call action="SEND_id_upload_link">
+            <with account_id="${account.id}" email="${email}"/>
+          </call>
+          <return value="{ verified: true, message: 'Account requires ID verification. ID upload link sent to your email.' }"/>
         </then>
       </if>
 
-      <if test="${account_status} == 'activated'">
+      <if test="${account.status} == 'activated'">
         <then>
-          <return value="{ verified: true, status: 'activated', message: 'Your account is already active. Is there anything else we can help you with?' }"/>
+          <return value="{ verified: true, message: 'Account is already active.' }"/>
         </then>
       </if>
 
-      <return value="{ verified: false, status: ${account_status}, message: 'Unable to verify account. Please contact customer support for assistance.' }"/>
+      <return value="{ verified: false, message: 'Unable to verify account. Please contact support.' }"/>
     </flow>
   </flows>
 </sfdl>

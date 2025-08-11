@@ -1,0 +1,13 @@
+<sfdl version="1.0" xmlns="urn:sfdl">
+  <actions>
+    <action name="GET_account_status" adapter="accounts" idempotentKey="${account_id}">
+      <input>
+        <field name="account_id" type="account_id"/>
+      </input>
+      <output type="account_status"/>
+      <audit event="account.status_checked">
+        <fieldRef>account_id</fieldRef>
+      </audit>
+    </action>
+  </actions>
+</sfdl>

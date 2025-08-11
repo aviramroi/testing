@@ -1,10 +1,13 @@
 <sfdl version="1.0" xmlns="urn:sfdl">
   <actions>
-    <action name="VERIFY_email" adapter="account">
+    <action name="VERIFY_email" adapter="accounts" idempotentKey="${email}">
       <input>
         <field name="email" type="email"/>
       </input>
       <output type="boolean"/>
+      <audit event="account.email_verified">
+        <fieldRef>email</fieldRef>
+      </audit>
     </action>
   </actions>
 </sfdl>

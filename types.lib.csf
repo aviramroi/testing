@@ -1,8 +1,16 @@
 <sfdl version="1.0" xmlns="urn:sfdl">
   <types>
-    <record name="AccountVerificationResult">
-      <field name="verified" type="boolean"/>
+    <record name="Account">
+      <field name="id" type="account_id"/>
+      <field name="email" type="email"/>
+      <field name="full_name" type="text"/>
       <field name="status" type="account_status"/>
+      <field name="created_at" type="timestamp"/>
+      <field name="updated_at" type="timestamp"/>
+    </record>
+    <record name="AccountVerificationResult">
+      <field name="account" type="Account"/>
+      <field name="verified" type="boolean"/>
       <field name="message" type="text"/>
     </record>
   </types>

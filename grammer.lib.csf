@@ -2,7 +2,8 @@
   <primitives>
     <primitive name="text"/>
     <primitive name="email"/>
-    <primitive name="boolean"/>
+    <primitive name="account_id"/>
+    <primitive name="timestamp"/>
   </primitives>
   <enums>
     <enum name="account_status">
