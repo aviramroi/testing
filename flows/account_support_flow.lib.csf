@@ -1,0 +1,118 @@
+<sfdl version="1.0" xmlns="urn:sfdl">
+  <flows>
+    <flow name="account_support_flow" returns="ok_response">
+      <args>
+        <arg name="ticket" type="ticket_id"/>
+        <arg name="email" type="email"/>
+        <arg name="user_full_name" type="text"/>
+        <arg name="action" type="requested_action"/>
+      </args>
+
+      <step name="ACC">
+        <call action="LOOKUP_account_by_email">
+          <with email="${email}"/>
+        </call>
+      </step>
+
+      <if test="${ACC} == null">
+        <then>
+          <call action="SEND_user_message">
+            <with ticket="${ticket}" message="Please provide the email associated with your account."/>
+          </call>
+          <return value="{ ok: true }"/>
+        </then>
+      </if>
+
+      <if test="${user_full_name} != ${ACC.full_name}">
+        <then>
+          <call action="SEND_user_message">
+            <with ticket="${ticket}" message="The name you provided does not match our records. Please verify your full name exactly as on your account."/>
+          </call>
+          <return value="{ ok: true }"/>
+        </then>
+      </if>
+
+      <if test="${action} == 'activation'">
+        <then>
+          <choose>
+            <when test="${ACC.status} == 'not_activated'">
+              <call action="SEND_activation_link">
+                <with email="${email}" link="https://members.masspay.io/activation"/>
+              </call>
+            </when>
+            <when test="${ACC.status} in ['locked','id_required']">
+              <call action="SEND_id_upload_link">
+                <with email="${email}" link="https://members.masspay.io/id-upload"/>
+              </call>
+              <call action="SEND_user_message">
+                <with ticket="${ticket}" message="Please upload a valid ID to unlock or activate your account and then return to https://members.masspay.io/v2/login. Let us know if you still encounter issues so we can escalate."/>
+              </call>
+            </when>
+            <when test="${ACC.status} == 'crypto_locked'">
+              <call action="ADD_internal_note">
+                <with ticket="${ticket}" note="Account is crypto-locked; auto-escalating to crypto team."/>
+              </call>
+              <call action="ESCALATE_crypto_case">
+                <with ticket="${ticket}" reason="Crypto restriction lock needs specialized support."/>
+              </call>
+            </when>
+            <otherwise>
+              <call action="SEND_user_message">
+                <with ticket="${ticket}" message="Your account is already activated. What else can we help you with?"/>
+              </call>
+            </otherwise>
+          </choose>
+        </then>
+      </if>
+
+      <if test="${action} == 'password_reset'">
+        <then>
+          <choose>
+            <when test="${ACC.status} == 'not_activated'">
+              <call action="SEND_activation_link">
+                <with email="${email}" link="https://members.masspay.io/activation"/>
+              </call>
+            </when>
+            <when test="${ACC.status} == 'locked'">
+              <call action="SEND_id_upload_link">
+                <with email="${email}" link="https://members.masspay.io/id-upload"/>
+              </call>
+            </when>
+            <when test="${ACC.status} in ['activated']">
+              <call action="INITIATE_password_reset">
+                <with email="${email}"/>
+              </call>
+            </when>
+            <when test="${ACC.status} == 'crypto_locked'">
+              <call action="ADD_internal_note">
+                <with ticket="${ticket}" note="Password reset for crypto-locked account; escalating to crypto team."/>
+              </call>
+              <call action="ESCALATE_crypto_case">
+                <with ticket="${ticket}" reason="Crypto restriction lock prevents password reset."/>
+              </call>
+            </when>
+          </choose>
+
+          <retry max="1" backoff="fixed(0ms)">
+            <call action="INITIATE_password_reset">
+              <with email="${email}"/>
+            </call>
+            <onError>
+              <call action="REQUEST_video_recording">
+                <with ticket="${ticket}" instructions="Please record a short video showing the issue you encounter when resetting your password and share it here so we can escalate."/>
+              </call>
+              <call action="ADD_internal_note">
+                <with ticket="${ticket}" note="Password reset attempted but user reported failure; awaiting video for escalation."/>
+              </call>
+              <call action="ESCALATE_case">
+                <with ticket="${ticket}" reason="User unable to reset password—video evidence requested."/>
+              </call>
+            </onError>
+          </retry>
+        </then>
+      </if>
+
+      <return value="{ ok: true }"/>
+    </flow>
+  </flows>
+</sfdl>

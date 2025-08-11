@@ -1,0 +1,15 @@
+<sfdl version="1.0" xmlns="urn:sfdl">
+  <actions>
+    <action name="ESCALATE_crypto_case" adapter="support" idempotentKey="${ticket}|crypto_escalation">
+      <input>
+        <field name="ticket" type="ticket_id"/>
+        <field name="reason" type="text"/>
+      </input>
+      <output type="ok_response"/>
+      <audit event="case.crypto_escalated">
+        <fieldRef>ticket</fieldRef>
+        <fieldRef>reason</fieldRef>
+      </audit>
+    </action>
+  </actions>
+</sfdl>

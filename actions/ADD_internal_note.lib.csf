@@ -1,0 +1,15 @@
+<sfdl version="1.0" xmlns="urn:sfdl">
+  <actions>
+    <action name="ADD_internal_note" adapter="tickets" idempotentKey="${ticket}|${note}">
+      <input>
+        <field name="ticket" type="ticket_id"/>
+        <field name="note" type="text"/>
+      </input>
+      <output type="ok_response"/>
+      <audit event="ticket.internal_note">
+        <fieldRef>ticket</fieldRef>
+        <fieldRef>note</fieldRef>
+      </audit>
+    </action>
+  </actions>
+</sfdl>

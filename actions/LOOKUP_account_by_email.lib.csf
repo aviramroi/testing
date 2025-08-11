@@ -1,0 +1,13 @@
+<sfdl version="1.0" xmlns="urn:sfdl">
+  <actions>
+    <action name="LOOKUP_account_by_email" adapter="crm" idempotentKey="${email}">
+      <input>
+        <field name="email" type="email"/>
+      </input>
+      <output type="Account"/>
+      <audit event="account.lookup">
+        <fieldRef>email</fieldRef>
+      </audit>
+    </action>
+  </actions>
+</sfdl>

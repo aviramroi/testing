@@ -1,0 +1,11 @@
+<sfdl version="1.0" xmlns="urn:sfdl">
+  <actions>
+    <action name="SEND_user_message" adapter="messaging" idempotentKey="${ticket}|${message}">
+      <input>
+        <field name="ticket" type="ticket_id"/>
+        <field name="message" type="message"/>
+      </input>
+      <output type="ok_response"/>
+    </action>
+  </actions>
+</sfdl>

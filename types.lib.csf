@@ -1,0 +1,10 @@
+<sfdl version="1.0" xmlns="urn:sfdl">
+  <types>
+    <record name="Account">
+      <field name="id" type="account_id"/>
+      <field name="email" type="email"/>
+      <field name="status" type="account_status"/>
+      <field name="full_name" type="text"/>
+    </record>
+  </types>
+</sfdl>

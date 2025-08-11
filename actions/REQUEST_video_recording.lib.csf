@@ -1,0 +1,11 @@
+<sfdl version="1.0" xmlns="urn:sfdl">
+  <actions>
+    <action name="REQUEST_video_recording" adapter="messaging" idempotentKey="${ticket}|video_request">
+      <input>
+        <field name="ticket" type="ticket_id"/>
+        <field name="instructions" type="text"/>
+      </input>
+      <output type="ok_response"/>
+    </action>
+  </actions>
+</sfdl>

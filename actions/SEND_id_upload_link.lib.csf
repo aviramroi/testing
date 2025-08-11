@@ -1,0 +1,11 @@
+<sfdl version="1.0" xmlns="urn:sfdl">
+  <actions>
+    <action name="SEND_id_upload_link" adapter="email" idempotentKey="${email}">
+      <input>
+        <field name="email" type="email"/>
+        <field name="link" type="text"/>
+      </input>
+      <output type="ok_response"/>
+    </action>
+  </actions>
+</sfdl>
