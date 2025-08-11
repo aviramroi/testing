@@ -1,14 +1,9 @@
 <sfdl version="1.0" xmlns="urn:sfdl">
   <types>
-    <record name="Account">
-      <field name="id" type="account_id"/>
-      <field name="email" type="email"/>
-      <field name="full_name" type="full_name"/>
+    <record name="AccountVerificationResult">
+      <field name="verified" type="boolean"/>
       <field name="status" type="account_status"/>
-    </record>
-    <record name="InternalNote">
-      <field name="ticket_id" type="account_id"/>
-      <field name="content" type="note_text"/>
+      <field name="message" type="text"/>
     </record>
   </types>
 </sfdl>

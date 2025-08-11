@@ -1,10 +1,8 @@
 <sfdl version="1.0" xmlns="urn:sfdl">
   <primitives>
     <primitive name="text"/>
-    <primitive name="ticket_id"/>
-    <primitive name="account_id"/>
     <primitive name="email"/>
-    <primitive name="ok_response"/>
+    <primitive name="boolean"/>
   </primitives>
   <enums>
     <enum name="account_status">
@@ -12,11 +10,6 @@
       <value>locked</value>
       <value>id_required</value>
       <value>activated</value>
-      <value>crypto_locked</value>
-    </enum>
-    <enum name="requested_action">
-      <value>activation</value>
-      <value>password_reset</value>
     </enum>
   </enums>
 </sfdl>

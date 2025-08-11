@@ -1,0 +1,70 @@
+<sfdl version="1.0" xmlns="urn:sfdl">
+  <flows>
+    <flow name="account_verification_flow" returns="AccountVerificationResult">
+      <args>
+        <arg name="email" type="email"/>
+        <arg name="name" type="text"/>
+      </args>
+
+      <step name="email_verified">
+        <call action="VERIFY_email">
+          <with email="${email}"/>
+        </call>
+      </step>
+
+      <if test="${email_verified} == false">
+        <then>
+          <return value="{ verified: false, status: 'not_activated', message: 'Email not found. Please provide the correct email associated with your account.' }"/>
+        </then>
+      </if>
+
+      <step name="name_verified">
+        <call action="VERIFY_name">
+          <with email="${email}" name="${name}"/>
+        </call>
+      </step>
+
+      <if test="${name_verified} == false">
+        <then>
+          <return value="{ verified: false, status: 'not_activated', message: 'Name does not match our records. Please verify your full name as it appears on your account.' }"/>
+        </then>
+      </if>
+
+      <step name="account_status">
+        <call action="CHECK_account_status">
+          <with email="${email}"/>
+        </call>
+      </step>
+
+      <if test="${account_status} == 'not_activated'">
+        <then>
+          <step name="sent_activation">
+            <call action="SEND_activation_link">
+              <with email="${email}"/>
+            </call>
+          </step>
+          <return value="{ verified: true, status: 'not_activated', message: 'Account not activated. An activation link has been sent to your email.' }"/>
+        </then>
+      </if>
+
+      <if test="${account_status} in ['locked', 'id_required']">
+        <then>
+          <step name="sent_id_upload">
+            <call action="SEND_id_upload_link">
+              <with email="${email}"/>
+            </call>
+          </step>
+          <return value="{ verified: true, status: ${account_status}, message: 'Account requires ID verification. An ID upload link has been sent to your email.' }"/>
+        </then>
+      </if>
+
+      <if test="${account_status} == 'activated'">
+        <then>
+          <return value="{ verified: true, status: 'activated', message: 'Your account is already active. Is there anything else we can help you with?' }"/>
+        </then>
+      </if>
+
+      <return value="{ verified: false, status: ${account_status}, message: 'Unable to verify account. Please contact customer support for assistance.' }"/>
+    </flow>
+  </flows>
+</sfdl>

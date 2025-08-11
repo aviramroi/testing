@@ -7,15 +7,17 @@
     <primitive name="url"/>
     <primitive name="note_text"/>
     <primitive name="video_url"/>
+    <primitive name="text"/>
+    <primitive name="ticket_id"/>
+    <primitive name="timestamp"/>
   </primitives>
 
   <enums>
     <enum name="account_status">
       <value>not_activated</value>
+      <value>locked_id_required</value>
+      <value>locked_crypto</value>
       <value>activated</value>
-      <value>locked</value>
-      <value>id_required</value>
-      <value>crypto_locked</value>
     </enum>
   </enums>
 </sfdl>

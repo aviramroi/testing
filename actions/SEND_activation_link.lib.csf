@@ -1,9 +1,10 @@
 <sfdl version="1.0" xmlns="urn:sfdl">
-  <action name="SEND_activation_link" adapter="messaging" idempotentKey="${ticket_id}|activation">
-    <input>
-      <field name="ticket_id" type="account_id"/>
-      <field name="activation_url" type="url"/>
-    </input>
-    <output type="text"/>
-  </action>
+  <actions>
+    <action name="SEND_activation_link" adapter="email">
+      <input>
+        <field name="email" type="email"/>
+      </input>
+      <output type="boolean"/>
+    </action>
+  </actions>
 </sfdl>

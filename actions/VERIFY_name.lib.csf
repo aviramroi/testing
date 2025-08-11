@@ -1,8 +1,9 @@
 <sfdl version="1.0" xmlns="urn:sfdl">
   <actions>
-    <action name="SEND_id_upload_link" adapter="email">
+    <action name="VERIFY_name" adapter="account">
       <input>
         <field name="email" type="email"/>
+        <field name="name" type="text"/>
       </input>
       <output type="boolean"/>
     </action>
